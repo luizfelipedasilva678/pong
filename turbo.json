@@ -1,0 +1,10 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "vitebuild": {
+      "outputs": ["dist/**"]
+    },
+    "dev": {},
+    "type-check": {}
+  }
+}
