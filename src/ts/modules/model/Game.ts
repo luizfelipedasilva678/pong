@@ -1,13 +1,20 @@
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "../../constants";
+import { Ball } from "./Ball";
+import { Paddle } from "./Paddle";
 
 export class Game {
   private ctx: CanvasRenderingContext2D;
-  private paddlePosition = CANVAS_WIDTH / 2 - 40;
+  private ball: Ball;
+  private userPaddle: Paddle;
+  private computerPaddle: Paddle;
   private rightButtonPressed = false;
   private leftButtonPressed = false;
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
+    this.ball = new Ball(this.ctx);
+    this.userPaddle = new Paddle(this.ctx, CANVAS_HEIGHT - 20, this.ball);
+    this.computerPaddle = new Paddle(this.ctx, 10, this.ball);
   }
 
   handleKeyDown = (event: KeyboardEvent) => {
@@ -17,8 +24,6 @@ export class Game {
         break;
       case "ArrowLeft":
         this.leftButtonPressed = true;
-        break;
-      default:
         break;
     }
   };
@@ -46,17 +51,14 @@ export class Game {
   }
 
   private drawBall() {
-    this.ctx.beginPath();
-    this.ctx.fillStyle = "#fff";
-    this.ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 10, 0, 2 * Math.PI);
-    this.ctx.fill();
+    this.ball.draw();
   }
 
   private drawDashedLine() {
     this.ctx.beginPath();
-    this.ctx.lineWidth = 5;
+    this.ctx.lineWidth = 10;
     this.ctx.strokeStyle = "#fff";
-    this.ctx.setLineDash([5, 5]);
+    this.ctx.setLineDash([10, 10]);
     this.ctx.moveTo(0, CANVAS_HEIGHT / 2);
     this.ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT / 2);
     this.ctx.stroke();
@@ -64,15 +66,8 @@ export class Game {
   }
 
   private drawPaddles() {
-    this.ctx.beginPath();
-    this.ctx.lineWidth = 5;
-    this.ctx.fillStyle = "#fff";
-    this.ctx.fillRect(this.paddlePosition, CANVAS_HEIGHT - 20, 90, 10);
-
-    this.ctx.beginPath();
-    this.ctx.lineWidth = 5;
-    this.ctx.fillStyle = "#fff";
-    this.ctx.fillRect(CANVAS_WIDTH / 2 - 40, 10, 90, 10);
+    this.userPaddle.draw();
+    this.computerPaddle.draw();
   }
 
   private drawBackground() {
@@ -84,13 +79,25 @@ export class Game {
     this.drawBackground();
     this.drawDashedLine();
 
+    this.ball.ballX += this.ball.ballDx;
+
+    if (this.userPaddle.hitTheBall || this.computerPaddle.hitTheBall) {
+      this.ball.ballDy = -this.ball.ballDy;
+    }
+
     if (this.rightButtonPressed) {
-      this.paddlePosition += 5;
+      this.userPaddle.paddlexPosition += this.userPaddle.paddleSpeed;
     }
 
     if (this.leftButtonPressed) {
-      this.paddlePosition -= 5;
+      this.userPaddle.paddlexPosition -= this.userPaddle.paddleSpeed;
     }
+
+    if (this.ball.ballX >= CANVAS_WIDTH || this.ball.ballX <= 0) {
+      this.ball.ballDx = -this.ball.ballDx;
+    }
+
+    this.ball.ballY += this.ball.ballDy;
 
     this.drawPaddles();
     this.drawBall();
