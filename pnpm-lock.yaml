@@ -4,12 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
+devDependencies:
   turbo:
     specifier: ^1.11.3
     version: 1.11.3
-
-devDependencies:
   typescript:
     specifier: ^5.2.2
     version: 5.3.3
@@ -425,7 +423,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /turbo-darwin-arm64@1.11.3:
@@ -433,7 +431,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /turbo-linux-64@1.11.3:
@@ -441,7 +439,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /turbo-linux-arm64@1.11.3:
@@ -449,7 +447,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /turbo-windows-64@1.11.3:
@@ -457,7 +455,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /turbo-windows-arm64@1.11.3:
@@ -465,7 +463,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
+    dev: true
     optional: true
 
   /turbo@1.11.3:
@@ -478,7 +476,7 @@ packages:
       turbo-linux-arm64: 1.11.3
       turbo-windows-64: 1.11.3
       turbo-windows-arm64: 1.11.3
-    dev: false
+    dev: true
 
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}

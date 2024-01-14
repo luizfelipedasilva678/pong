@@ -1,7 +1,7 @@
 {
   "name": "pong",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "turbo run vitedev",
@@ -11,10 +11,8 @@
     "vitebuild": "vite build"
   },
   "devDependencies": {
+    "turbo": "^1.11.3",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
-  },
-  "dependencies": {
-    "turbo": "^1.11.3"
   }
 }
