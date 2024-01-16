@@ -18,13 +18,57 @@ export class GameController {
     this.model.handleKeyDown(event);
   }
 
+  showMenu() {
+    this.view.showMenu();
+  }
+
+  setMenuTitle(text: string) {
+    this.view.setMenuTitle(text);
+  }
+
+  hideMenu() {
+    this.view.hideMenu();
+  }
+
+  hideStartButton() {
+    this.view.hideStartButton();
+  }
+
+  start() {
+    this.hideStartButton();
+    this.model.start();
+  }
+
+  restartMenu() {
+    this.view.showRestartButton();
+  }
+
+  restart() {
+    this.model.restartGame();
+  }
+
   init() {
     this.view.setCanvasConfig();
-    this.view.onKeyUp(this.model.handleKeyUp.bind(this));
-    this.view.onKeyDown(this.model.handleKeyDown.bind(this));
+    this.view.onKeyUp(this.handleKeyUp.bind(this));
+    this.view.onKeyDown(this.handleKeyDown.bind(this));
+    this.view.onStartButtonClick(this.start.bind(this));
+    this.view.onRestartButtonClick(this.restart.bind(this));
   }
 
   update() {
+    if (!this.model.getGameIsRunning()) {
+      this.showMenu();
+
+      if (this.model.getWinner() !== "") {
+        this.restartMenu();
+        this.setMenuTitle(
+          this.model.getWinner() === "user" ? "You win!" : "You lose!"
+        );
+      }
+    } else {
+      this.hideMenu();
+    }
+
     this.model.update();
   }
 }

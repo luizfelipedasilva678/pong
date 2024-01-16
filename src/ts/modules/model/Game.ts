@@ -10,6 +10,8 @@ export class Game {
   private computerPaddle: Paddle;
   private userScore = 0;
   private computerScore = 0;
+  private gameIsRunning = false;
+  private winner: "user" | "computer" | "" = "";
   private buttonPressed = {
     right: false,
     left: false,
@@ -128,6 +130,17 @@ export class Game {
     }
   }
 
+  private checkWinner() {
+    if (this.userScore === 3 || this.computerScore === 3) {
+      this.gameIsRunning = false;
+      this.winner = this.userScore === 3 ? "user" : "computer";
+    }
+  }
+
+  public getWinner() {
+    return this.winner;
+  }
+
   private ballMovements() {
     if (this.computerPaddle.hitTheBall || this.userPaddle.hitTheBall) {
       this.ball.ballDy = -this.ball.ballDy;
@@ -144,13 +157,14 @@ export class Game {
     if (!ballIsInGame) {
       if (this.ball.ballY > CANVAS_HEIGHT) {
         this.computerScore++;
+        this.ball.ballDy = -3;
       }
 
       if (this.ball.ballY <= 0) {
         this.userScore++;
+        this.ball.ballDy = 3;
       }
 
-      this.ball.ballDy = 3;
       this.ball.ballDx = 1;
       this.ball.ballX = CANVAS_WIDTH / 2;
       this.ball.ballY = CANVAS_HEIGHT / 2;
@@ -162,9 +176,25 @@ export class Game {
     this.ball.ballY += this.ball.ballDy;
   }
 
-  update() {
+  public update() {
     this.clear();
     this.draw();
+  }
+
+  public restartGame() {
+    this.userScore = 0;
+    this.computerScore = 0;
+    this.gameIsRunning = true;
+    this.userPaddle = new Paddle(this.ctx, CANVAS_HEIGHT - 20, this.ball);
+    this.computerPaddle = new Paddle(this.ctx, 10, this.ball);
+  }
+
+  public start() {
+    this.gameIsRunning = true;
+  }
+
+  public getGameIsRunning() {
+    return this.gameIsRunning;
   }
 
   private draw() {
@@ -173,8 +203,12 @@ export class Game {
     this.drawDashedLine();
     this.drawPaddles();
     this.drawBall();
-    this.computerMovements();
-    this.playerMovements();
-    this.ballMovements();
+    this.checkWinner();
+
+    if (this.gameIsRunning) {
+      this.computerMovements();
+      this.playerMovements();
+      this.ballMovements();
+    }
   }
 }
