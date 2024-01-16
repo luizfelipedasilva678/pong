@@ -3,7 +3,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH } from "../../constants";
 export class Ball {
   private ctx: CanvasRenderingContext2D;
   public ballDy = 3;
-  public ballDx = 3;
+  public ballDx = 0;
   public ballX = CANVAS_WIDTH / 2;
   public ballY = CANVAS_HEIGHT / 2;
   public ballWidth = 10;
