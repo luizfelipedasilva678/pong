@@ -8,8 +8,12 @@ export class Game {
   private ball: Ball;
   private userPaddle: Paddle;
   private computerPaddle: Paddle;
-  private rightButtonPressed = false;
-  private leftButtonPressed = false;
+  private userScore = 0;
+  private computerScore = 0;
+  private buttonPressed = {
+    right: false,
+    left: false,
+  };
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
@@ -18,32 +22,24 @@ export class Game {
     this.computerPaddle = new Paddle(this.ctx, 10, this.ball);
   }
 
-  handleKeyDown = (event: KeyboardEvent) => {
-    switch (event.key) {
+  private updateButtonPressedState = (key: string, isPressed: boolean) => {
+    switch (key) {
       case "ArrowRight":
-        this.rightButtonPressed = true;
+        this.buttonPressed.right = isPressed;
         break;
       case "ArrowLeft":
-        this.leftButtonPressed = true;
+        this.buttonPressed.left = isPressed;
         break;
     }
+  };
+
+  handleKeyDown = (event: KeyboardEvent) => {
+    this.updateButtonPressedState(event.key, true);
   };
 
   handleKeyUp = (event: KeyboardEvent) => {
-    switch (event.key) {
-      case "ArrowRight":
-        this.rightButtonPressed = false;
-        break;
-      case "ArrowLeft":
-        this.leftButtonPressed = false;
-        break;
-    }
+    this.updateButtonPressedState(event.key, false);
   };
-
-  update() {
-    this.clear();
-    this.draw();
-  }
 
   private clear() {
     this.ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -72,6 +68,21 @@ export class Game {
   private drawBackground() {
     this.ctx.fillStyle = "#000";
     this.ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }
+
+  private drawScore() {
+    this.ctx.font = "30px Arial";
+    this.ctx.fillStyle = "#fff";
+    this.ctx.fillText(
+      `${this.userScore}`,
+      CANVAS_WIDTH - 30,
+      CANVAS_HEIGHT / 2 + 40
+    );
+    this.ctx.fillText(
+      `${this.computerScore}`,
+      CANVAS_WIDTH - 30,
+      CANVAS_HEIGHT / 2 - 20
+    );
   }
 
   private computerMovements() {
@@ -105,14 +116,14 @@ export class Game {
 
   private playerMovements() {
     if (
-      this.rightButtonPressed &&
+      this.buttonPressed.right &&
       this.userPaddle.paddlexPosition <
         CANVAS_WIDTH - this.userPaddle.paddleWidth
     ) {
       this.userPaddle.paddlexPosition += this.userPaddle.paddleSpeed;
     }
 
-    if (this.leftButtonPressed && this.userPaddle.paddlexPosition >= 0) {
+    if (this.buttonPressed.left && this.userPaddle.paddlexPosition >= 0) {
       this.userPaddle.paddlexPosition -= this.userPaddle.paddleSpeed;
     }
   }
@@ -127,12 +138,20 @@ export class Game {
       this.ball.ballDx = -this.ball.ballDx;
     }
 
-    const ballIsAvailable =
+    const ballIsInGame =
       this.ball.ballY > 0 && this.ball.ballY <= CANVAS_HEIGHT;
 
-    if (!ballIsAvailable) {
+    if (!ballIsInGame) {
+      if (this.ball.ballY > CANVAS_HEIGHT) {
+        this.computerScore++;
+      }
+
+      if (this.ball.ballY <= 0) {
+        this.userScore++;
+      }
+
       this.ball.ballDy = 3;
-      this.ball.ballDx = 0;
+      this.ball.ballDx = 1;
       this.ball.ballX = CANVAS_WIDTH / 2;
       this.ball.ballY = CANVAS_HEIGHT / 2;
       this.ball.ballWidth = 10;
@@ -143,8 +162,14 @@ export class Game {
     this.ball.ballY += this.ball.ballDy;
   }
 
+  update() {
+    this.clear();
+    this.draw();
+  }
+
   private draw() {
     this.drawBackground();
+    this.drawScore();
     this.drawDashedLine();
     this.drawPaddles();
     this.drawBall();
